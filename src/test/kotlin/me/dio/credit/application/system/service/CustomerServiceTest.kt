@@ -19,7 +19,6 @@ import org.springframework.test.context.ActiveProfiles
 import java.math.BigDecimal
 import java.util.*
 
-@ActiveProfiles ("test")
 @ExtendWith(MockKExtension::class)
 class CustomerServiceTest {
     @MockK lateinit var customerRepository: CustomerRepository
@@ -27,12 +26,9 @@ class CustomerServiceTest {
 
     @Test
     fun `should create customer`(){
-        //given
         val fakeCustomer: Customer = buildCustomer()
         every { customerRepository.save(any()) } returns fakeCustomer
-        //when
         val actual: Customer = customerService.save(fakeCustomer)
-        //then
         Assertions.assertThat(actual).isNotNull
         Assertions.assertThat(actual).isSameAs(fakeCustomer)
         verify(exactly = 1) { customerRepository.save(fakeCustomer) }
@@ -62,19 +58,16 @@ class CustomerServiceTest {
 
     @Test
     fun `should delete customer by id`() {
-        //given
         val fakeId: Long = Random().nextLong()
         val fakeCustomer: Customer = buildCustomer(id = fakeId)
         every { customerRepository.findById(fakeId) } returns Optional.of(fakeCustomer)
         every { customerRepository.delete(fakeCustomer) } just runs
-        //when
         customerService.delete(fakeId)
-        //then
         verify(exactly = 1) { customerRepository.findById(fakeId) }
         verify(exactly = 1) { customerRepository.delete(fakeCustomer) }
     }
 
-    fun buildCustomer(
+    private fun buildCustomer(
         firstName: String = "Rudson",
         lastName: String = "Santana",
         cpf: String = "12345678999",
