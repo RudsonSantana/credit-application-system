@@ -20,11 +20,13 @@ import java.util.*
 
 @ExtendWith(MockKExtension::class)
 class CustomerServiceTest {
-    @MockK lateinit var customerRepository: CustomerRepository
-    @InjectMockKs lateinit var customerService: CustomerService
+    @MockK
+    lateinit var customerRepository: CustomerRepository
+    @InjectMockKs
+    lateinit var customerService: CustomerService
 
     @Test
-    fun `should create customer`(){
+    fun `should create customer`() {
         val fakeCustomer: Customer = buildCustomer()
         every { customerRepository.save(any()) } returns fakeCustomer
         val actual: Customer = customerService.save(fakeCustomer)
@@ -50,7 +52,7 @@ class CustomerServiceTest {
         val fakeId: Long = Random().nextLong()
         every { customerRepository.findById(fakeId) } returns Optional.empty()
         Assertions.assertThatExceptionOfType(BusinessException::class.java)
-            .isThrownBy { customerService.findById(fakeId)}
+            .isThrownBy { customerService.findById(fakeId) }
             .withMessage("id $fakeId not found")
         verify(exactly = 1) { customerRepository.findById(fakeId) }
     }
@@ -66,27 +68,29 @@ class CustomerServiceTest {
         verify(exactly = 1) { customerRepository.delete(fakeCustomer) }
     }
 
-    private fun buildCustomer(
-        firstName: String = "Rudson",
-        lastName: String = "Santana",
-        cpf: String = "30776767020",
-        email: String = "rudson@email.com",
-        password: String = "1234",
-        zipCode: String = "1234",
-        street: String = "Rua Santana, 34",
-        income: BigDecimal = BigDecimal.valueOf(2000.0),
-        id: Long = 1L
-    ) = Customer(
-        firstName = firstName,
-        lastName = lastName,
-        cpf = cpf,
-        email = email,
-        password = password,
-        address = Address(
-            zipCode = zipCode,
-            street = street,
-        ),
-        income = income,
-        id = id
-    )
+    companion object {
+        fun buildCustomer(
+            firstName: String = "Rudson",
+            lastName: String = "Santana",
+            cpf: String = "30776767020",
+            email: String = "rudson@email.com",
+            password: String = "1234",
+            zipCode: String = "1234",
+            street: String = "Rua Santana, 34",
+            income: BigDecimal = BigDecimal.valueOf(2000.0),
+            id: Long = 1L
+        ) = Customer(
+            firstName = firstName,
+            lastName = lastName,
+            cpf = cpf,
+            email = email,
+            password = password,
+            address = Address(
+                zipCode = zipCode,
+                street = street,
+            ),
+            income = income,
+            id = id
+        )
+    }
 }
