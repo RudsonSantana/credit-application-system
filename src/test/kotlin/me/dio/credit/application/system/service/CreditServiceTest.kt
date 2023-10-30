@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.util.*
 
 
 @ExtendWith(MockKExtension::class)
@@ -80,6 +81,40 @@ class CreditServiceTest {
         verify(exactly = 1) { creditRepository.findAllByCustomerId(customerId) }
     }
 
+    @Test
+    fun `should return credit for a valid customer and credit code`() {
+        val customerId: Long = 1L
+        val creditCode: UUID = UUID.randomUUID()
+        val credit: Credit = buildCredit(customer = Customer(id = customerId))
+        every { creditRepository.findByCreditCode(creditCode) } returns credit
+        val actual: Credit = creditService.findByCreditCode(customerId, creditCode)
+        Assertions.assertThat(actual).isNotNull
+        Assertions.assertThat(actual).isSameAs(credit)
+        verify(exactly = 1) { creditRepository.findByCreditCode(creditCode) }
+    }
+
+    @Test
+    fun `should throw BusinessException for invalid credit code`() {
+        val customerId: Long = 1L
+        val invalidCreditCode: UUID = UUID.randomUUID()
+        every { creditRepository.findByCreditCode(invalidCreditCode) } returns null
+        Assertions.assertThatThrownBy { creditService.findByCreditCode(customerId, invalidCreditCode) }
+            .isInstanceOf(BusinessException::class.java)
+            .hasMessage("Creditcode $invalidCreditCode not found")
+        verify(exactly = 1) { creditRepository.findByCreditCode(invalidCreditCode) }
+    }
+
+    @Test
+    fun `should throw IllegalArgumentException for different customer ID`() {
+        val customerId: Long = 1L
+        val creditCode: UUID = UUID.randomUUID()
+        val credit: Credit = buildCredit(customer = Customer(id = 2L))
+        every { creditRepository.findByCreditCode(creditCode) } returns credit
+        Assertions.assertThatThrownBy { creditService.findByCreditCode(customerId, creditCode) }
+            .isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessage("Contact admin")
+        verify { creditRepository.findByCreditCode(creditCode) }
+    }
 
     companion object {
         private fun buildCredit(
