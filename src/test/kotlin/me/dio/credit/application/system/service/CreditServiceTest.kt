@@ -119,7 +119,7 @@ class CreditServiceTest {
     companion object {
         private fun buildCredit(
             creditValue: BigDecimal = BigDecimal.valueOf(100.0),
-            dayFirstInstallment: LocalDate = LocalDate.now().plusMonths(5L),
+            dayFirstInstallment: LocalDate = LocalDate.now().plusMonths(1L),
             numberOfInstallment: Int = 15,
             customer: Customer = CustomerServiceTest.buildCustomer()
         ): Credit = Credit(
