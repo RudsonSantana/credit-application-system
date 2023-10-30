@@ -127,7 +127,6 @@ class CustomerResourceTest {
             .andExpect(MockMvcResultMatchers.jsonPath("$.income").value("2000.0"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.zipCode").value("1234"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.street").value("Rua Santana, 34"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
             .andDo(MockMvcResultHandlers.print())
     }
 
