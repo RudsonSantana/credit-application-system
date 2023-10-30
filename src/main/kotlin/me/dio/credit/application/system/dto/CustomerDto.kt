@@ -3,7 +3,7 @@ package me.dio.credit.application.system.dto
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.NotNull
-import me.dio.credit.application.system.entity.Adress
+import me.dio.credit.application.system.entity.Address
 import me.dio.credit.application.system.entity.Customer
 import org.hibernate.validator.constraints.br.CPF
 import java.math.BigDecimal
@@ -28,7 +28,7 @@ data class CustomerDto(
         email = this.email,
         income = this.income,
         password = this.password,
-        address = Adress(
+        address = Address(
             zipCode = this.zipCode,
             street = this.street
         )
